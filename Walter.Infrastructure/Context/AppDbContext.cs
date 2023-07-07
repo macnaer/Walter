@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Walter.Core.Entities.User;
 
 namespace Walter.Infrastructure.Context
 {
@@ -13,5 +14,6 @@ namespace Walter.Infrastructure.Context
         public AppDbContext() : base() { }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+        public DbSet<AppUser> AppUsers { get; set; }
     }
 }
