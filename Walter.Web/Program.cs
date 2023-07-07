@@ -1,4 +1,6 @@
 using Walter.Infrastructure;
+using Walter.Infrastructure.Initializers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,6 +11,8 @@ string connStr = builder.Configuration.GetConnectionString("DefaultConnection");
 // Database context
 builder.Services.AddDbContext(connStr);
 
+// Add Infrastructure Service
+builder.Services.AddInfrastructureService();
 
 var app = builder.Build();
 
@@ -30,5 +34,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+await UsersAndRolesInitializer.SeedUsersAndRoles(app);
 
 app.Run();
