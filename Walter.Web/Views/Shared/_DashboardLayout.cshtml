@@ -1,0 +1,16 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="./Dashboard/_Header.cshtml" />
+</head>
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <partial name="./Dashboard/_Navbar.cshtml" />
+        <partial name="./Dashboard/_Sidebar.cshtml" />
+        @RenderBody()
+        <partial name="./Dashboard/_Footer.cshtml" />
+   </div>
+    <partial name="./Dashboard/_FooterIncludes.cshtml" />
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
