@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Walter.Core.DTO_s.User;
+using Walter.Core.Validation.User;
 
 namespace Walter.Web.Controllers
 {
@@ -24,7 +25,14 @@ namespace Walter.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignIn(LoginUserDto model)
         {
-            return View();
+            var validator = new LoginUserValidation();
+            var validationResult = await validator.ValidateAsync(model);
+            if (validationResult.IsValid)
+            {
+                return View();
+            }
+            ViewBag.AuthError = validationResult.Errors[0];
+            return View(model);
         }
 
     }
