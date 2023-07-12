@@ -1,0 +1,11 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <partial name="./Auth/_Header.cshtml" />
+</head>
+<body class="hold-transition login-page">
+        @RenderBody()
+    <partial name="./Auth/_Footer.cshtml" />
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
