@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Walter.Core.DTO_s.User;
+using Walter.Core.Services;
 using Walter.Core.Validation.User;
 
 namespace Walter.Web.Controllers
@@ -8,6 +9,13 @@ namespace Walter.Web.Controllers
     [Authorize]
     public class DashboardController : Controller
     {
+        private readonly UserService _userService;
+
+        public DashboardController(UserService userService)
+        {
+            _userService = userService;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -29,7 +37,13 @@ namespace Walter.Web.Controllers
             var validationResult = await validator.ValidateAsync(model);
             if (validationResult.IsValid)
             {
-                return View();
+                ServiceResponse result = await _userService.LoginUserAsync(model);
+                if (result.Success)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewBag.AuthError = result.Message;
+                return View(model);
             }
             ViewBag.AuthError = validationResult.Errors[0];
             return View(model);

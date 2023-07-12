@@ -1,3 +1,4 @@
+using Walter.Core;
 using Walter.Infrastructure;
 using Walter.Infrastructure.Initializers;
 
@@ -10,6 +11,9 @@ builder.Services.AddControllersWithViews();
 string connStr = builder.Configuration.GetConnectionString("DefaultConnection");
 // Database context
 builder.Services.AddDbContext(connStr);
+
+// Add Core services
+builder.Services.AddCoreServices();
 
 // Add Infrastructure Service
 builder.Services.AddInfrastructureService();
