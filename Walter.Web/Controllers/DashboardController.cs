@@ -60,5 +60,11 @@ namespace Walter.Web.Controllers
             await _userService.LogoutUserAsync();
             return RedirectToAction(nameof(SignIn));
         }
+
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _userService.GetAllAsync();
+            return View();
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +15,13 @@ namespace Walter.Core.Services
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IMapper _mapper;
 
-        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager; 
+            _mapper = mapper;
         }
 
         public async Task<ServiceResponse> LoginUserAsync(LoginUserDto model)
@@ -65,6 +69,22 @@ namespace Walter.Core.Services
             {
                 Success = false,
                 Message = "User or password incorrect."
+            };
+        }
+
+        public async Task<ServiceResponse> GetAllAsync()
+        {
+            List<AppUser> users = await _userManager.Users.ToListAsync();
+            List<UsersDto> mappedUsers = users.Select(u => _mapper.Map<AppUser, UsersDto>(u)).ToList();
+
+            // write code here! 
+
+
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "All users loaded.",
+                Payload = mappedUsers
             };
         }
 

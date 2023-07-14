@@ -25,6 +25,8 @@ namespace Walter.Infrastructure.Initializers
                     AppUser admin  = new AppUser()
                     {
                         UserName = "admin@email.com",
+                        FirstName = "John",
+                        LastName = "Snow",
                         Email = "admin@email.com",
                         EmailConfirmed = true,
                         PhoneNumber = "+xx(xxx)xxx-xx-xx",
