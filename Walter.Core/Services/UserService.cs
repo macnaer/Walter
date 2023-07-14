@@ -77,7 +77,10 @@ namespace Walter.Core.Services
             List<AppUser> users = await _userManager.Users.ToListAsync();
             List<UsersDto> mappedUsers = users.Select(u => _mapper.Map<AppUser, UsersDto>(u)).ToList();
 
-            // write code here! 
+            for (int i = 0; i < users.Count; i++)
+            {
+                mappedUsers[i].Role = (await _userManager.GetRolesAsync(users[i])).FirstOrDefault();
+            }
 
 
             return new ServiceResponse

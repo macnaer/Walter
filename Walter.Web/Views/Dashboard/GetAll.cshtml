@@ -1,0 +1,8 @@
+﻿@using Walter.Core.DTO_s.User;
+@model List<UsersDto>
+
+<div class="content-wrapper">
+    @foreach(var item in Model){
+        <h1>@item.Role</h1>
+    }
+</div>
