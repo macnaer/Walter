@@ -24,6 +24,11 @@ namespace Walter.Web.Controllers
         [AllowAnonymous] // Method GET
         public async Task<IActionResult> SignIn()
         {
+            var user = HttpContext.User.Identity.IsAuthenticated;
+            if (user)
+            {
+                return RedirectToAction(nameof(Index));
+            }
             return View();
         }
 
@@ -49,5 +54,11 @@ namespace Walter.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _userService.LogoutUserAsync();
+            return RedirectToAction(nameof(SignIn));
+        }
     }
 }

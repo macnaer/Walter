@@ -67,5 +67,11 @@ namespace Walter.Core.Services
                 Message = "User or password incorrect."
             };
         }
+
+
+        public async Task LogoutUserAsync()
+        {
+            await _signInManager.SignOutAsync();
+        } 
     }
 }
