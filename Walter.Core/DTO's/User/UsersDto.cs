@@ -12,6 +12,7 @@ namespace Walter.Core.DTO_s.User
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public bool EmailConfirmed { get; set; }
+        public string Email { get; set; } = string.Empty;
         public string LockedEnd { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
     }
