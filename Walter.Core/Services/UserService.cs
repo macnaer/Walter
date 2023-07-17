@@ -91,10 +91,29 @@ namespace Walter.Core.Services
             };
         }
 
-
         public async Task LogoutUserAsync()
         {
             await _signInManager.SignOutAsync();
         } 
+
+        public async Task<ServiceResponse> GetByIdAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if(user == null)
+            {
+                return new ServiceResponse { Success = false, Message = "User not found." };
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            var mappedUser = _mapper.Map<AppUser, EditUserDto>(user);
+            mappedUser.Role = roles[0];
+
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "User loaded!",
+                Payload = mappedUser
+            };
+        }
     }
 }

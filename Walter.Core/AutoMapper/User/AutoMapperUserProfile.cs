@@ -14,6 +14,7 @@ namespace Walter.Core.AutoMapper.User
         public AutoMapperUserProfile()
         {
             CreateMap<UsersDto, AppUser>().ReverseMap();
+            CreateMap<EditUserDto, AppUser>().ForMember(dest => dest.Id, opt => opt.Ignore()).ReverseMap();
         }
     }
 }

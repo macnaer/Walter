@@ -66,5 +66,15 @@ namespace Walter.Web.Controllers
             var result = await _userService.GetAllAsync();
             return View(result.Payload);
         }
+
+        public async Task<IActionResult> Profile(string id)
+        {
+            var result = await _userService.GetByIdAsync(id);
+            if (result.Success)
+            {
+                return View(result.Payload);
+            }
+            return View();
+        }
     }
 }
