@@ -115,5 +115,87 @@ namespace Walter.Core.Services
                 Payload = mappedUser
             };
         }
+
+
+        public async Task<ServiceResponse> ChangePasswordAsync(ChangePasswordDto model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    Message = "User not found.",
+                    Success = false
+                };
+            }
+
+            if (model.Password != model.ConfirmPassword)
+            {
+                return new ServiceResponse
+                {
+                    Message = "Password do not match.",
+                    Success = false
+                };
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.Password);
+            if (result.Succeeded)
+            {
+                return new ServiceResponse
+                {
+                    Message = "Password successfully updated.",
+                    Success = true,
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Message = "Password not updated.",
+                    Success = false,
+                    Errors = result.Errors.Select(e => e.Description),
+                };
+            }
+        }
+
+        public async Task<ServiceResponse> CreateAsync(CreateUserDto model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if(user != null)
+            {
+                return new ServiceResponse
+                {
+                    Message = "User exists.",
+                    Success = false,
+                };
+            }
+
+            var mappedUser = _mapper.Map<CreateUserDto, AppUser>(model);
+            IdentityResult result = await _userManager.CreateAsync(mappedUser, model.Password);
+            if (result.Succeeded)
+            {
+                return new ServiceResponse
+                {
+                    Message = "User successfully created.",
+                    Success = true,
+                };
+            }
+
+            List<IdentityError> errorList = result.Errors.ToList();
+
+            string errors = "";
+            foreach(var error in errorList)
+            {
+                errors = errors + error.Description.ToString();
+            }
+
+            return new ServiceResponse
+            {
+                Message = "User creating error.",
+                Success = false,
+                Payload = errors
+            };
+
+        }
     }
 }

@@ -76,5 +76,47 @@ namespace Walter.Web.Controllers
             }
             return View();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdatePassword(ChangePasswordDto model)
+        {
+            var validator = new ChangePasswordValidation();
+            var validationResult = await validator.ValidateAsync(model);
+            if (validationResult.IsValid)
+            {
+                var result = await _userService.ChangePasswordAsync(model);
+                return RedirectToAction(nameof(GetAll));
+            }
+            else
+            {
+                return View(validationResult.Errors);
+            }
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateUserDto model)
+        {
+            var validator = new CreateUserValidation();
+            var validationResult = await validator.ValidateAsync(model);
+            if(validationResult.IsValid)
+            {
+                var result = await _userService.CreateAsync(model);
+                if (result.Success)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewBag.AuthError = result.Payload;
+                return View(model);
+            }
+            ViewBag.AuthError = validationResult.Errors[0];
+            return View(model);
+        }
     }
 }
