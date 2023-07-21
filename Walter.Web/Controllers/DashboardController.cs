@@ -118,5 +118,11 @@ namespace Walter.Web.Controllers
             ViewBag.AuthError = validationResult.Errors[0];
             return View(model);
         }
+
+        public async Task<IActionResult> Delete(string Id)
+        {
+            var user = await _userService.GetByIdAsync(Id);
+            return View(user.Payload);
+        }
     }
 }
