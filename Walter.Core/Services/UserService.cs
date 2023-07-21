@@ -174,6 +174,7 @@ namespace Walter.Core.Services
             IdentityResult result = await _userManager.CreateAsync(mappedUser, model.Password);
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(mappedUser, model.Role);
                 return new ServiceResponse
                 {
                     Message = "User successfully created.",
