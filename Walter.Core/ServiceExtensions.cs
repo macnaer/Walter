@@ -14,6 +14,7 @@ namespace Walter.Core
         public static void AddCoreServices(this IServiceCollection services)
         {
             services.AddTransient<UserService>();
+            services.AddTransient<EmailService>();
         }
 
         public static void AddMapping(this IServiceCollection services)

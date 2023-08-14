@@ -15,13 +15,15 @@ namespace Walter.Core.Services
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly EmailService _emailService;
         private readonly IMapper _mapper;
 
-        public UserService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper)
+        public UserService(EmailService emailService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager; 
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         public async Task<ServiceResponse> LoginUserAsync(LoginUserDto model)
@@ -52,7 +54,7 @@ namespace Walter.Core.Services
                 return new ServiceResponse
                 {
                     Success = false,
-                    Message = "Confirm your password please."
+                    Message = "Confirm your email please."
                 };
             }
 
