@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,14 +18,16 @@ namespace Walter.Core.Services
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly EmailService _emailService;
+        private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
-        public UserService(EmailService emailService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper)
+        public UserService(IConfiguration config, EmailService emailService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager; 
             _mapper = mapper;
             _emailService = emailService;
+            _config = config;
         }
 
         public async Task<ServiceResponse> LoginUserAsync(LoginUserDto model)
@@ -177,6 +181,9 @@ namespace Walter.Core.Services
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(mappedUser, model.Role);
+
+                await SendConfirmationEmail(mappedUser);
+
                 return new ServiceResponse
                 {
                     Message = "User successfully created.",
@@ -199,6 +206,50 @@ namespace Walter.Core.Services
                 Payload = errors
             };
 
+        }
+
+        public async Task SendConfirmationEmail(AppUser newUser)
+        {
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+            var encodedEmailToken = Encoding.UTF8.GetBytes(token);
+            var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+
+            var url = $"{_config["HostSettings:URL"]}/Dashboard/confirmemail?userid={newUser.Id}&token={validEmailToken}";
+            string body = $"<h1>Confirm your email</h1> <a href='{url}'>Confirm now!</a>";
+            await _emailService.SendEmailAsync(newUser.Email, "Confirmation email.", body);
+        }
+
+        public async Task<ServiceResponse> ConfirmEmailAsync(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if(user == null)
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+            }
+
+            var decodedToken = WebEncoders.Base64UrlDecode(token);
+            var normalToken = Encoding.UTF8.GetString(decodedToken);
+            var result = await _userManager.ConfirmEmailAsync(user, normalToken);
+
+            if (result.Succeeded)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "Email successfully confirmed."
+                };
+            }
+
+            return new ServiceResponse
+            {
+                Success = false,
+                Message = "Email not confirmed.",
+                Errors = result.Errors.Select(e => e.Description)
+            };
         }
     }
 }

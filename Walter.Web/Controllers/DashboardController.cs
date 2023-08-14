@@ -124,5 +124,18 @@ namespace Walter.Web.Controllers
             var user = await _userService.GetByIdAsync(Id);
             return View(user.Payload);
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var result = await _userService.ConfirmEmailAsync(userId, token);
+            if (result.Success)
+            {
+                return Redirect(nameof(SignIn));
+            }
+
+            return Redirect(nameof(SignIn));
+        }
     }
 }
