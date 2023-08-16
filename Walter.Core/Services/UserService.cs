@@ -251,5 +251,32 @@ namespace Walter.Core.Services
                 Errors = result.Errors.Select(e => e.Description)
             };
         }
+
+        public async Task<ServiceResponse> ForgotPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if(user == null)
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var encodedEmailToken = Encoding.UTF8.GetBytes(token);
+            var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+
+            var url = $"{_config["HostSettings:URL"]}/Dashboard/ResetPassword?email={email}&token={validEmailToken}";
+            string body = $"<h1>Follow the instruction to reset your password.</h1> <a href='{url}'>Reset now!</a>";
+            await _emailService.SendEmailAsync(email, "Confirmation email.", body);
+
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "Email for reset password successfully send."
+            };
+        }
     }
 }

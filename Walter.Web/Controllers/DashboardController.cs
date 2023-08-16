@@ -134,8 +134,28 @@ namespace Walter.Web.Controllers
             {
                 return Redirect(nameof(SignIn));
             }
-
             return Redirect(nameof(SignIn));
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(string email)
+        {
+            var result = await _userService.ForgotPasswordAsync(email);
+            if (result.Success)
+            {
+                @ViewBag.AuthError = "Check your email.";
+                return View(nameof(SignIn));
+            }
+            @ViewBag.AuthError = "Error sending reset data.";
+            return View();
         }
     }
 }
