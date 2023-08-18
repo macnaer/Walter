@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Walter.Core.DTO_s.User;
 using Walter.Core.Services;
 using Walter.Core.Validation.User;
@@ -181,5 +183,34 @@ namespace Walter.Web.Controllers
             return View();
         }
 
+        public async Task<IActionResult> DeleteById(string id)
+        {
+            var result = await _userService.DeleteAsync(id);
+            if(result.Success)
+            {
+                return View(nameof(Index));
+            }
+            return View(nameof(Index));
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            var result = await _userService.GetByIdAsync(id);
+            await GetRoles();
+            if (result.Success)
+            {
+                return View(result.Payload);
+            }
+            return View();
+        }
+
+        private async Task GetRoles()
+        {
+            var result = await _userService.LoadRoles();
+            @ViewBag.RoleList = new SelectList(
+          (System.Collections.IEnumerable)result, nameof(IdentityRole.Id),
+              nameof(IdentityRole.Name)
+              );
+        }
     }
 }

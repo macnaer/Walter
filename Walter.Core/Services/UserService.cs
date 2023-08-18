@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,18 +17,20 @@ namespace Walter.Core.Services
     public class UserService
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly EmailService _emailService;
         private readonly IConfiguration _config;
         private readonly IMapper _mapper;
 
-        public UserService(IConfiguration config, EmailService emailService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper)
+        public UserService(RoleManager<IdentityRole> roleManager, IConfiguration config, EmailService emailService, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager; 
             _mapper = mapper;
             _emailService = emailService;
             _config = config;
+            _roleManager = roleManager;
         }
 
         public async Task<ServiceResponse> LoginUserAsync(LoginUserDto model)
@@ -312,7 +315,42 @@ namespace Walter.Core.Services
                 Message = "Sonething wring. Connect with your admin.",
                 Errors = result.Errors.Select(e => e.Description)
             };
+        }
 
+        public async Task<ServiceResponse> DeleteAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "User successfullt deleted."
+                };
+            }
+
+            return new ServiceResponse
+            {
+                Success = false,
+                Message = "Sonething wring. Connect with your admin.",
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+
+        public async Task<List<IdentityRole>> LoadRoles()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+            return roles;
         }
     }
 }

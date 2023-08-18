@@ -50,12 +50,14 @@
                                 <p>All users</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a asp-action="Create" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Add new</p>
-                            </a>
-                        </li>
+                         @if (@User.IsInRole("Administrator")){
+                            <li class="nav-item">
+                                <a asp-action="Create" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add new</p>
+                                </a>
+                            </li>
+                         }
                     </ul>
                 </li>
             </ul>
