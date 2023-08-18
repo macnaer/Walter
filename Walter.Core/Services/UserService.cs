@@ -278,5 +278,41 @@ namespace Walter.Core.Services
                 Message = "Email for reset password successfully send."
             };
         }
+
+        public async Task<ServiceResponse> ResetPasswordAsync(ResetPasswordDto model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if(user == null)
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+            }
+
+            var decodedToken = WebEncoders.Base64UrlDecode(model.Token);
+            var normalToken = Encoding.UTF8.GetString(decodedToken);
+
+        
+            var result = await _userManager.ResetPasswordAsync(user, normalToken, model.Password);
+
+            if (result.Succeeded)
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "Password successfully reset."
+                };
+            }
+
+            return new ServiceResponse
+            {
+                Success = false,
+                Message = "Sonething wring. Connect with your admin.",
+                Errors = result.Errors.Select(e => e.Description)
+            };
+
+        }
     }
 }

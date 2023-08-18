@@ -157,5 +157,29 @@ namespace Walter.Web.Controllers
             @ViewBag.AuthError = "Error sending reset data.";
             return View();
         }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword(string email, string token)
+        {
+            @ViewBag.Email = email;
+            @ViewBag.Token = token;
+            return View();
+        }
+
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> ResetPasswordData(ResetPasswordDto model)
+        {
+            var result = await _userService.ResetPasswordAsync(model);
+            if (result.Success)
+            {
+                @ViewBag.AuthError = result.Message;
+                return View(nameof(SignIn));
+            }
+            @ViewBag.AuthError = result.Errors;
+            return View();
+        }
+
     }
 }
