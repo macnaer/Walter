@@ -7,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Walter.Core.Entities.User;
+using Walter.Core.Interfaces;
 using Walter.Infrastructure.Context;
+using Walter.Infrastructure.Repository;
 
 namespace Walter.Infrastructure
 {
@@ -39,6 +41,11 @@ namespace Walter.Infrastructure
             })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+        }
+
+        public static void AddRepositories(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
     }
 }

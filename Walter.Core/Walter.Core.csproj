@@ -15,4 +15,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Specifications\" />
+  </ItemGroup>
+
 </Project>
