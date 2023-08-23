@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Walter.Core.AutoMapper.Categories;
 using Walter.Core.AutoMapper.User;
+using Walter.Core.Interfaces;
 using Walter.Core.Services;
 
 namespace Walter.Core
@@ -15,11 +17,13 @@ namespace Walter.Core
         {
             services.AddTransient<UserService>();
             services.AddTransient<EmailService>();
+            services.AddScoped<ICategoryService,  CategoryService>();
         }
 
         public static void AddMapping(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AutoMapperUserProfile));
+            services.AddAutoMapper(typeof(AutoMapperCategoryProfile));
         }
     }
 }
