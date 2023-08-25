@@ -9,6 +9,6 @@ namespace Walter.Core.DTO_s.Site
     public class CategoryDto
     {
         public int Id { get; set; }
-        public int Name { get; set; }
+        public string Name { get; set; }
     }
 }

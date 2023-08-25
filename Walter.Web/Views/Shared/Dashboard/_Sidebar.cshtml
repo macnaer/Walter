@@ -45,19 +45,45 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a asp-action="GetAll" class="nav-link">
+                            <a asp-action="GetAll" asp-controller="Dashboard" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>All users</p>
                             </a>
                         </li>
                          @if (@User.IsInRole("Administrator")){
                             <li class="nav-item">
-                                <a asp-action="Create" class="nav-link">
+                                <a asp-action="Create" asp-controller="Dashboard" class="nav-link">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Add new</p>
                                 </a>
                             </li>
                          }
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="nav-icon fas fa-clipboard-list fa-xs"></i>
+                        <p>
+                            Categories
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-action="Index" asp-controller="Category"  class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>All categories</p>
+                            </a>
+                        </li>
+                        @if (@User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a asp-action="Create" asp-controller="Category" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add new</p>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </li>
             </ul>
