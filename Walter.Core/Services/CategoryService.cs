@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Walter.Core.DTO_s.Site;
+using Walter.Core.DTO_s.Category;
 using Walter.Core.Entities.Site;
+using Walter.Core.Entities.Specifications;
 using Walter.Core.Interfaces;
 
 namespace Walter.Core.Services
@@ -42,6 +43,26 @@ namespace Walter.Core.Services
             if (category == null) return null;
 
             return _mapper.Map<CategoryDto>(category);
+        }
+
+        public async Task<ServiceResponse> GetByName(CategoryDto model)
+        {
+            var result = await _categoryRepo.GetItemBySpec(new CategorySpecification.GetByName(model.Name));
+            if (result != null)
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "Category exists."
+                };
+            }
+            var category = _mapper.Map<CategoryDto>(result);
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "Category successfully loaded.",
+                Payload = category
+            };
         }
 
         public async Task<List<CategoryDto>> GettAll()

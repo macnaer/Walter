@@ -18,6 +18,7 @@ namespace Walter.Core
             services.AddTransient<UserService>();
             services.AddTransient<EmailService>();
             services.AddScoped<ICategoryService,  CategoryService>();
+            services.AddScoped<IPostService,  PostService>();
         }
 
         public static void AddMapping(this IServiceCollection services)

@@ -1,0 +1,110 @@
+﻿@using Walter.Core.DTO_s.Post;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@using X.PagedList;
+@model IPagedList<PostDto>
+
+@{
+    ViewData["Title"] = "Categories";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Delete category</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Delete category</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- START ALERTS AND CALLOUTS -->
+            <div class="row">
+
+                @if (Model.Count() > 0)
+                {
+                    <div class="col-md-10 offset-md-1">
+                        <h2 class="mb-5">You can't delete category @ViewBag.CategoryName because it contains posts.</h2>
+                        <div class="list-group">
+                            @foreach (var item in Model)
+                            {
+                                <div class="list-group-item mb-2">
+                                    <div class="row">
+                                        <div class="col-8 px-4">
+                                            <div class="mb-2">
+                                                <h3>@item.Title</h3>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="float-right">
+                                                <a asp-controller="Post" asp-action="Edit" asp-route-id="@item.Id" asp-route-slug="@item.Slug" class="btn btn-block btn-warning d-inline">Edit</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                            <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                                @Html.PagedListPager(Model, page => Url.Action("index", new { page = page }), new PagedListRenderOptions()
+                            {
+                            ActiveLiElementClass = "active",
+                            PageClasses = new[]{ "page-link"},
+                            LiElementClasses=new[] { "page-item" },
+                            UlElementClasses = new[] { "pagination","justify-content-center", "mt-3" },
+                            LinkToNextPageFormat = "Next",
+                            LinkToPreviousPageFormat = "Prev",
+                            MaximumPageNumbersToDisplay = 3,
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.Never,
+                            DisplayLinkToNextPage = PagedListDisplayMode.Never
+                            })
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-6 offset-3">
+                        <div class="card card-default">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    Warning!
+                                </h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <div class="callout callout-danger">
+                                    @if (@ViewBag.AuthError != null)
+                                    {
+                                        <span class="text-danger">@ViewBag.AuthError</span>
+                                    }
+                                    <h5 class="mb-4">Do you really wants to delete category @ViewBag.CategoryName?</h5>
+                                    <a asp-action="DeleteById" asp-controller="Category" asp-route-id="@ViewBag.CategoryId" style="width: 25%;" class="btn btn-block btn-danger btn-sm">Delete</a>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                }
+
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
