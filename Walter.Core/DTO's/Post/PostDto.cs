@@ -10,10 +10,10 @@ namespace Walter.Core.DTO_s.Post
     public class PostDto
     {
         public int Id { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string FullText { get; set; }
-        public string PublishDate { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string FullText { get; set; } = string.Empty;
+        public string PublishDate { get; set; } = string.Empty;
         private string? _imagePath;
         public string? ImagePath
         {
@@ -22,7 +22,7 @@ namespace Walter.Core.DTO_s.Post
         }
         const string defaultPath = "Default.png";
         public int CategoryId { get; set; }
-        public string CategoryName { get; set; }
+        public string CategoryName { get; set; } = string.Empty;
         public IFormFileCollection File { get; set; }
         public string Slug => Title?
             .Replace("а", "a")
