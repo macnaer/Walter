@@ -1,0 +1,120 @@
+﻿@using Walter.Core.DTO_s.Post;
+@model PostDto
+
+@{
+    ViewData["Title"] = "Posts";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    <link rel="stylesheet" href="~/dashboard/plugins/summernote/summernote-bs4.min.css" />
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Post managament</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a asp-action="Index">Home</a></li>
+                        <li class="breadcrumb-item active">Create post</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- SELECT2 EXAMPLE -->
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">Create post</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5 offset-3">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">New post</h3>
+                                </div>
+                                @if (@ViewBag.AuthError != null)
+                                {
+                                    <span class="text-danger mt-3">@ViewBag.AuthError</span>
+                                }
+
+                                <form method="post" asp-controller="Post" asp-action="Create" enctype="multipart/form-data">
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label>Title</label>
+                                            <input type="text" asp-for="@Model.Title" class="form-control" placeholder="Title" />
+                                        </div> 
+                                        <div class="form-group">
+                                            <label>Description</label>                                             
+                                            <textarea id="summernote" type="text" asp-for="@Model.Description" class="form-control">Place <em>your</em> <u>post</u> <string>heare...</string></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Text</label>
+                                            <textarea id="text" type="text" asp-for="@Model.FullText" class="form-control">Place <em>your</em> <u>post</u> <string>heare...</string></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Category</label>
+                                            <select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="custom-select form-control-border"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Image</label>
+                                            <div class=" input-group">
+                                                <div class="custom-file">
+                                                    <div class="custom-file">
+                                                        <input type="file" id="Image" name="files" asp-for="@Model.File" class="custom-file-input" />
+                                                        <label class="custom-file-label">Coose file...</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <button type="submit" class="btn btn-primary">Create</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+@section Scripts{
+    <script src="~/dashboard/plugins/summernote/summernote-bs5.min.js"></script>
+
+    <script>
+        $(function() {
+            $('#summernote').summernote({
+                minHeight: 200
+            })
+
+            $('#text').summernote({
+                minHeight: 200
+            })
+        })
+    </script>
+}                                       

@@ -86,6 +86,32 @@
                         }
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="nav-icon fas fa-address-card fa-xs"></i>
+                        <p>
+                            Posts
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-action="Index" asp-controller="Post" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>All posts</p>
+                            </a>
+                        </li>
+                        @if (@User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a asp-action="Create" asp-controller="Post" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Add new</p>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
