@@ -11,5 +11,6 @@ namespace Walter.Core.Interfaces
     {
         Task<PostDto?> Get(int id);
         Task<List<PostDto>> GetByCategory(int id);
+        Task Create(PostDto model);
     }
 }

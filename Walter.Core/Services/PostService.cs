@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -14,14 +16,46 @@ namespace Walter.Core.Services
 {
     public class PostService : IPostService
     {
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IMapper _mapper;
         private readonly IRepository<Post> _postRepo;
 
-        public PostService(IRepository<Post> postRepo, IMapper mapper)
+        public PostService(IConfiguration configuration, IRepository<Post> postRepo, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _mapper = mapper;
             _postRepo = postRepo;
+            _webHostEnvironment = webHostEnvironment;
+            _configuration = configuration;
         }
+
+        public async Task Create(PostDto model)
+        {
+            if(model.File.Count > 0)
+            {
+                string webRootPath = _webHostEnvironment.WebRootPath; 
+                string upload = webRootPath + _configuration.GetValue<string>("ImageSettings:ImagePath");
+                var files = model.File;
+                string fileName = Guid.NewGuid().ToString();
+                string extensions = Path.GetExtension(files[0].FileName);
+                using (var fileStream = new FileStream(Path.Combine(upload, fileName + extensions), FileMode.Create))
+                {
+                    files[0].CopyTo(fileStream);
+                }
+                model.ImagePath = fileName + extensions;
+            }
+            else
+            {
+                model.ImagePath = "Default.png";
+            }
+
+            DateTime currentDate = DateTime.Today;
+            string formatedDate = currentDate.ToString("d");
+            model.PublishDate = formatedDate;
+            await _postRepo.Insert(_mapper.Map<Post>(model));
+            await _postRepo.Save();
+        }
+
         public async Task<PostDto?> Get(int id)
         {
             if (id < 0) return null; // exception handling

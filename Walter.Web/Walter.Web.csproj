@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Walter.Infrastructure\Walter.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\posts\" />
+  </ItemGroup>
+
 </Project>
