@@ -1,3 +1,98 @@
-﻿
+﻿@using Walter.Core.DTO_s.Post;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+@using X.PagedList;
+@model IPagedList<PostDto>
 
-<h1>Index = GetAll</h1>
+@{
+    ViewData["Title"] = "Posts";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <h2 class="text-center display-4">Search</h2>
+        </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <form method="post" asp-action="Search" asp-controller="Post">
+                        <div class="input-group input-group-lg">
+                            <input type="search" name="searchString" class="form-control form-control-lg" placeholder="Search...">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-lg btn-default">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-10 offset-md-1">
+                    <div class="list-group">
+                        @foreach (var item in Model)
+                        {
+                            <div class="list-group-item mb-5">
+                                <div class="row">
+                                    <div class="col-auto">
+                                        @if (item.ImagePath == "Default.png")
+                                        {
+                                            <img class="img-fluid" src="~/images/posts/Default.png" alt="Photo" style="max-height: 160px;">
+                                        }
+                                        else
+                                        {
+                                            <img class="img-fluid" src="~/images/posts/@item.ImagePath" alt="Photo" style="max-height: 160px;">
+                                        }
+                                    </div>
+                                    <div class="col px-4 mb-4">
+                                        <div class="mb-2">
+                                            <div class="float-right">@item.PublishDate</div>
+                                            <h3>@item.Title</h3>
+                                            <p class="mb-0">@Html.Raw(@item.Description)</p>
+                                        </div>
+                                        <a asp-controller="Post" asp-action="PostsByCategory" asp-route-id="@item.CategoryId" class="btn btn-default btn-sm">@item.CategoryName</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="float-right mb-4">
+                                            @*                                            <a asp-controller="Post" asp-action="Preview" asp-route-id="@item.Id" class="btn btn-block btn-primary d-inline">Details</a>
+                                        *@  <a asp-controller="Post" asp-action="Edit" asp-route-id="@item.Id" asp-route-slug="@item.Slug" class="btn btn-block btn-warning d-inline">Edit</a>
+                                            <a asp-controller="Post" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-block btn-danger d-inline">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
+                            @Html.PagedListPager(Model, page => Url.Action("index", new { page = page }), new PagedListRenderOptions()
+                            {
+                            ActiveLiElementClass = "active",
+                            PageClasses = new[]{ "page-link"},
+                            LiElementClasses=new[] { "page-item" },
+                            UlElementClasses = new[] { "pagination","justify-content-center", "mt-3" },
+                            LinkToNextPageFormat = "Next",
+                            LinkToPreviousPageFormat = "Prev",
+                            MaximumPageNumbersToDisplay = 3,
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.Never,
+                            DisplayLinkToNextPage = PagedListDisplayMode.Never
+                            })
+                        </div>
+                        @if (Model.Count() <= 0)
+                        {
+                            <h2>No posts were found for your query.</h2>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
