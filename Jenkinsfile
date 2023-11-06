@@ -51,7 +51,7 @@ pipeline  {
             steps {
                 echo " ============== pushing image =================="
                 sh '''
-                docker push macnaer/walter:latest
+                docker run -d --name walter -p 80:80 macnaer/walter:latest
                 '''
             }
         }
